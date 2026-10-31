@@ -1,0 +1,8 @@
+{
+  "name": "PrepPulse CBT - Student Exam Hub",
+  "description": "Upload exam question papers & solutions from Telegram, take timed CBT tests, sync to cloud, and access offline for revision and in-depth question analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
