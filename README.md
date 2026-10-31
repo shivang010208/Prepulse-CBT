@@ -2,9 +2,9 @@
 
 > **Hackathon Submission:** Going beyond conversational chatbots by combining **multimodal document reasoning**, **agentic extraction workflows**, **grounded web search orchestration**, and **100% offline edge execution** into an autonomous exam preparation platform.
 
-🌐 **Live Demo:** [https://ais-pre-56ogzwpk45olyxt5g5g3th-723477198949.asia-east1.run.app](https://ais-pre-56ogzwpk45olyxt5g5g3th-723477198949.asia-east1.run.app)
+🌐 **Live Demo:** [https://preppulsestudent.ai.studio](https://preppulsestudent.ai.studio)
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Google_AI_Studio-4285F4.svg?style=flat&logo=google)](https://ais-pre-56ogzwpk45olyxt5g5g3th-723477198949.asia-east1.run.app)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Google_AI_Studio-4285F4.svg?style=flat&logo=google)](https://preppulsestudent.ai.studio)
 [![Hackathon Track](https://img.shields.io/badge/Track-Agentic_Workflows_&_Multimodal_AI-ff69b4.svg)](#-agentic-architecture--multimodal-intelligence)
 [![Google AI Studio](https://img.shields.io/badge/LLM-Gemini_2.5_Flash_/_1.5_Flash-4285F4.svg?logo=google)](https://ai.google.dev/)
 [![React 19](https://img.shields.io/badge/React-19-61dafb.svg?logo=react)](https://react.dev/)
