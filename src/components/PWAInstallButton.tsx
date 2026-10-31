@@ -20,10 +20,23 @@ export const PWAInstallButton: React.FC = () => {
   // If already installed and launched as standalone PWA
   if (isInstalled) {
     return (
-      <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium text-emerald-300 bg-emerald-950/40 border border-emerald-800/40 rounded-lg">
+      <button
+        onClick={async () => {
+          if ('serviceWorker' in navigator) {
+            const reg = await navigator.serviceWorker.getRegistration();
+            if (reg) {
+              await reg.update();
+            }
+          }
+          window.location.reload();
+        }}
+        className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium text-emerald-300 bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-800/40 rounded-lg transition"
+        title="App is installed. Click to check for updates & reload."
+      >
         <Check className="w-3 h-3 text-emerald-400" />
-        <span>Installed</span>
-      </div>
+        <span className="hidden sm:inline">Installed App</span>
+        <span className="sm:hidden">Installed</span>
+      </button>
     );
   }
 

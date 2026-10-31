@@ -359,8 +359,24 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.resolve(__dirname, 'dist')));
+    // In production, ensure Service Worker and index.html never get stale-cached by browsers
+    app.use((req, res, next) => {
+      if (req.url === '/sw.js' || req.url === '/manifest.webmanifest') {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      }
+      next();
+    });
+
+    app.use(express.static(path.resolve(__dirname, 'dist'), {
+      setHeaders: (res, pathUrl) => {
+        if (pathUrl.endsWith('sw.js') || pathUrl.endsWith('manifest.webmanifest')) {
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        }
+      },
+    }));
+
     app.get('*', (req, res) => {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
     });
   }

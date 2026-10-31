@@ -394,6 +394,16 @@ export const CBTTestView: React.FC<CBTTestViewProps> = ({
             <span className="tracking-wider">{formatTimer(timeLeft)}</span>
           </div>
 
+          {/* Quick Submit Test Button in Header */}
+          <button
+            onClick={() => setShowSubmitConfirm(true)}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/20 active:scale-95 transition"
+            title="Submit Exam Paper"
+          >
+            <CheckCircle className="w-3.5 h-3.5" />
+            <span>Submit</span>
+          </button>
+
           {/* Question Palette Drawer Trigger (Mobile) */}
           <button
             onClick={() => setShowPaletteDrawer(true)}
@@ -726,12 +736,13 @@ export const CBTTestView: React.FC<CBTTestViewProps> = ({
               <ChevronRight className="w-4 h-4 ml-1" />
             </button>
 
-            {/* Mobile Submit CTA button */}
+            {/* Universal Submit Button in Bottom Bar */}
             <button
               onClick={() => setShowSubmitConfirm(true)}
-              className="lg:hidden px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold min-h-[44px] flex items-center justify-center transition"
+              className="px-3.5 sm:px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold min-h-[44px] flex items-center gap-1.5 shadow-md shadow-emerald-600/20 active:scale-95 transition"
             >
-              Submit
+              <CheckCircle className="w-3.5 h-3.5" />
+              <span>Submit</span>
             </button>
           </div>
         </div>
