@@ -1,6 +1,0 @@
-{
-  "summary":  "Implementation Plan:\n1. Remove the calculator trigger button and modal import from CBTTestView.tsx (exam area).\n2. Add a dedicated 'Save to Revision Deck' / 'Saved' toggle button in the bottom action bar next to 'Mark & Next' in CBTTestView.tsx with real-time feedback toast/indicator.\n3. Enhance the Revision Deck (RevisionVaultView.tsx) with:\n   - Clear question removal with confirmation and bulk clear option.\n   - Dedicated 'Analyse Question' action on each saved question that generates in-depth AI & Google Search derivations with KaTeX step-by-step math.\n   - Caching generated analyses locally so students can review them offline anytime.",
-  "updatedAt":  "2026-10-31T15:47:49.761299451Z",
-  "requestFeedback":  true,
-  "userFacing":  true
-}
