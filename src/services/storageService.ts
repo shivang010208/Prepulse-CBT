@@ -16,10 +16,23 @@ export class StorageService {
         return INITIAL_PAPERS;
       }
       const loaded: ExamPaper[] = JSON.parse(data);
-      // Ensure featured papers are present
+      // Ensure featured papers are present and updated with latest fields (e.g. diagrams)
       for (const initial of INITIAL_PAPERS) {
-        if (!loaded.some((p) => p.id === initial.id)) {
+        const existingIdx = loaded.findIndex((p) => p.id === initial.id);
+        if (existingIdx === -1) {
           loaded.unshift(initial);
+        } else {
+          // Merge in any newly added diagramSvg / diagramDescription
+          loaded[existingIdx] = {
+            ...initial,
+            ...loaded[existingIdx],
+            questions: initial.questions.map((q, qIdx) => ({
+              ...q,
+              ...(loaded[existingIdx].questions?.[qIdx] || {}),
+              diagramSvg: q.diagramSvg || loaded[existingIdx].questions?.[qIdx]?.diagramSvg,
+              diagramDescription: q.diagramDescription || loaded[existingIdx].questions?.[qIdx]?.diagramDescription,
+            })),
+          };
         }
       }
       this.savePapers(loaded);

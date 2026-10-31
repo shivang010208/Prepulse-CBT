@@ -4,6 +4,8 @@ export interface ExamQuestion {
   section: string;
   text: string;
   diagramUrl?: string;
+  diagramDescription?: string;
+  diagramSvg?: string;
   options: {
     id: string; // 'A' | 'B' | 'C' | 'D'
     text: string;

@@ -328,6 +328,40 @@ export const RevisionVaultView: React.FC<RevisionVaultViewProps> = ({ papers, on
                 <div className="p-4 space-y-3">
                   <p className="text-sm font-medium text-slate-100 leading-relaxed">{q.text}</p>
 
+                  {/* Question Diagram / Schematic */}
+                  {(q.diagramSvg || q.diagramUrl || q.diagramDescription) && (
+                    <div className="rounded-xl bg-slate-950 border border-slate-800 p-3 space-y-2.5">
+                      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-cyan-400">
+                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                        <span>Question Diagram</span>
+                      </div>
+
+                      {q.diagramSvg && (
+                        <div
+                          className="p-2 bg-slate-900 rounded-lg border border-slate-800/80 flex items-center justify-center overflow-x-auto"
+                          dangerouslySetInnerHTML={{ __html: q.diagramSvg }}
+                        />
+                      )}
+
+                      {q.diagramUrl && (
+                        <div className="p-2 bg-slate-900 rounded-lg border border-slate-800 flex items-center justify-center">
+                          <img
+                            src={q.diagramUrl}
+                            alt="Question Diagram"
+                            className="rounded-lg max-h-48 object-contain"
+                          />
+                        </div>
+                      )}
+
+                      {q.diagramDescription && (
+                        <p className="text-xs text-slate-400 leading-relaxed">
+                          <strong className="text-cyan-300">Context: </strong>
+                          {q.diagramDescription}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   {/* Options */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                     {sanitizeQuestionOptions(q.options).map((opt) => {

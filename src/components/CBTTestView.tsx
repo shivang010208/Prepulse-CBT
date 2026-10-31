@@ -476,14 +476,40 @@ export const CBTTestView: React.FC<CBTTestViewProps> = ({
               {currentQuestion.text}
             </div>
 
-            {/* Diagram if available */}
-            {currentQuestion.diagramUrl && (
-              <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 max-w-sm">
-                <img
-                  src={currentQuestion.diagramUrl}
-                  alt="Question Diagram"
-                  className="rounded-lg max-h-48 object-contain"
-                />
+            {/* Diagram / Schematic rendering */}
+            {(currentQuestion.diagramSvg || currentQuestion.diagramUrl || currentQuestion.diagramDescription) && (
+              <div className="rounded-2xl bg-slate-900 border border-slate-800 p-4 space-y-3 max-w-xl">
+                <div className="flex items-center gap-2 text-xs font-semibold text-cyan-400">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                  <span>Question Diagram & Visual Schematic</span>
+                </div>
+
+                {/* SVG Schematic */}
+                {currentQuestion.diagramSvg && (
+                  <div
+                    className="p-3 bg-slate-950 rounded-xl border border-slate-800/80 flex items-center justify-center overflow-x-auto"
+                    dangerouslySetInnerHTML={{ __html: currentQuestion.diagramSvg }}
+                  />
+                )}
+
+                {/* Image URL / Uploaded diagram */}
+                {currentQuestion.diagramUrl && (
+                  <div className="p-2 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center">
+                    <img
+                      src={currentQuestion.diagramUrl}
+                      alt="Question Diagram"
+                      className="rounded-lg max-h-56 object-contain"
+                    />
+                  </div>
+                )}
+
+                {/* Diagram Description / Context */}
+                {currentQuestion.diagramDescription && (
+                  <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-xs text-slate-300 leading-relaxed">
+                    <strong className="text-cyan-300 block mb-1">Visual Context:</strong>
+                    {currentQuestion.diagramDescription}
+                  </div>
+                )}
               </div>
             )}
 

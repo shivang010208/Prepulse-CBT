@@ -22,6 +22,26 @@ export const INITIAL_PAPERS: ExamPaper[] = [
         questionNumber: 1,
         section: 'Physics',
         text: 'A block of mass m = 2 kg is placed on a frictionless incline of angle θ = 30°. A horizontal force F is applied to the block such that it remains at rest on the incline. What is the magnitude of the horizontal force F? (Take g = 9.8 m/s²)',
+        diagramDescription: 'Free body diagram of a block of mass m = 2 kg on a 30° inclined plane. Force F acts horizontally to the right. Normal force N acts perpendicular to the inclined plane, and gravity mg acts vertically downwards.',
+        diagramSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 200" width="100%" height="160" className="mx-auto">
+  <polygon points="40,170 320,170 320,50" fill="none" stroke="#64748b" stroke-width="2.5" />
+  <path d="M 100,170 A 60,60 0 0,0 95,152" fill="none" stroke="#38bdf8" stroke-width="2" />
+  <text x="110" y="162" fill="#38bdf8" font-size="12" font-family="sans-serif" font-weight="bold">θ = 30°</text>
+  <!-- Incline Plane Surface -->
+  <!-- Block at x=180, y=110 -->
+  <g transform="translate(180,110) rotate(-23)">
+    <rect x="-25" y="-30" width="50" height="30" rx="3" fill="#1e1b4b" stroke="#818cf8" stroke-width="2.5" />
+    <text x="-12" y="-10" fill="#e0e7ff" font-size="12" font-family="sans-serif" font-weight="bold">m = 2kg</text>
+    <!-- Gravity vector -->
+    <line x1="0" y1="0" x2="0" y2="45" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrow)" />
+    <!-- Normal vector -->
+    <line x1="0" y1="-30" x2="0" y2="-65" stroke="#34d399" stroke-width="2" />
+  </g>
+  <!-- Horizontal Force F -->
+  <line x1="95" y1="110" x2="155" y2="110" stroke="#fbbf24" stroke-width="3" />
+  <polygon points="155,105 167,110 155,115" fill="#fbbf24" />
+  <text x="115" y="100" fill="#fbbf24" font-size="13" font-family="sans-serif" font-weight="bold">F (Horizontal)</text>
+</svg>`,
         options: [
           { id: 'A', text: '11.3 N' },
           { id: 'B', text: '19.6 N' },
@@ -38,6 +58,21 @@ export const INITIAL_PAPERS: ExamPaper[] = [
         questionNumber: 2,
         section: 'Physics',
         text: 'Two concentric spherical conducting shells of radii R and 2R carry charges Q and -2Q respectively. The potential difference between the inner and outer shell (V_inner - V_outer) is:',
+        diagramDescription: 'Concentric spherical conducting shells: Inner sphere of radius R with positive charge +Q. Outer concentric spherical shell of radius 2R with negative charge -2Q.',
+        diagramSvg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 200" width="100%" height="160" className="mx-auto">
+  <!-- Outer Shell -->
+  <circle cx="180" cy="100" r="75" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-dasharray="4,3" />
+  <text x="260" y="100" fill="#818cf8" font-size="12" font-family="sans-serif" font-weight="bold">Outer Shell: -2Q (radius 2R)</text>
+  <!-- Inner Shell -->
+  <circle cx="180" cy="100" r="38" fill="#1e1b4b" stroke="#38bdf8" stroke-width="2.5" />
+  <text x="180" y="104" fill="#38bdf8" font-size="12" font-family="sans-serif" text-anchor="middle" font-weight="bold">+Q</text>
+  <!-- Radius R line -->
+  <line x1="180" y1="100" x2="218" y2="100" stroke="#f43f5e" stroke-width="1.8" />
+  <text x="195" y="93" fill="#f43f5e" font-size="11" font-family="sans-serif" font-weight="bold">R</text>
+  <!-- Radius 2R line -->
+  <line x1="180" y1="100" x2="180" y2="25" stroke="#34d399" stroke-width="1.8" />
+  <text x="185" y="58" fill="#34d399" font-size="11" font-family="sans-serif" font-weight="bold">2R</text>
+</svg>`,
         options: [
           { id: 'A', text: 'Q / (4πε₀ R)' },
           { id: 'B', text: 'Q / (8πε₀ R)' },

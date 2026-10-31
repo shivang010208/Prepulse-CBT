@@ -1,4 +1,5 @@
 import { ExamPaper, ExamQuestion } from '../types/exam';
+import { DiagramSynthesizer } from './diagramGenerator';
 
 export interface ParsedPDFResult {
   title: string;
@@ -267,11 +268,16 @@ export class PDFExamParser {
           solutionMap.get(localQNumber) ||
           `Detailed solution: Correct option is (${correctOpt}). Refer to NCERT / standard notes for complete derivation.`;
 
+        const questionFullText = currentQText.join(' ').replace(/\s+/g, ' ').trim();
+        const diagramInfo = DiagramSynthesizer.synthesize(questionFullText, currentSection);
+
         questions.push({
           id: `q-${currentSection.toLowerCase()}-${globalQNumber}-${Date.now()}-${globalIndex++}`,
           questionNumber: globalQNumber,
           section: currentSection,
-          text: currentQText.join(' ').replace(/\s+/g, ' ').trim(),
+          text: questionFullText,
+          diagramSvg: diagramInfo.diagramSvg,
+          diagramDescription: diagramInfo.diagramDescription,
           options: finalOptions,
           correctOptionId: correctOpt,
           explanation,

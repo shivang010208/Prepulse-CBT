@@ -80,9 +80,10 @@ app.post('/api/parse-paper', async (req, res) => {
       }
     }
 
-    // Otherwise, for smaller text or images, use Gemini AI
+    // For AI parsing (images, PDFs, or Telegram text)
     const systemInstruction = `You are an expert exam question paper digitizer and competitive examination parser (specializing in JEE Main/Advanced, NEET, UPSC, SSC, SAT, CBSE, and mock test series distributed via Telegram and coaching institutes).
-Your task is to take raw question paper text or images (often containing questions, multiple choice options A/B/C/D, answer keys, and step-by-step solutions) and parse them into a structured Computer-Based Test (CBT) paper.
+Your task is to take raw question paper text or images (often containing questions, diagrams, multiple choice options A/B/C/D, answer keys, and step-by-step solutions) and parse them into a structured Computer-Based Test (CBT) paper.
+
 Rules:
 1. Accurately split into discrete questions.
 2. Detect options (A, B, C, D) or numerical questions. If options are present, provide id 'A', 'B', 'C', 'D' and the clean option text.
@@ -90,7 +91,12 @@ Rules:
 4. Extract or generate a clear, comprehensive, step-by-step solution / explanation with formulas and reasoning.
 5. Classify the Subject/Section (e.g., Physics, Chemistry, Mathematics, Biology, General Studies, Quantitative Aptitude, Logical Reasoning).
 6. Set standard timing and marking (e.g. 4 marks for correct, -1 mark for wrong for JEE/NEET, or standard +1 / -0.25).
-7. Extract questions cleanly.`;
+7. DIAGRAM & VISUAL RECOGNITION (CRITICAL):
+   - Many science/math questions refer to diagrams, circuits, ray optics, pulleys, graphs, chemical structures, or geometry figures (e.g., "In the given circuit...", "Refer to the figure below...", "A block of mass m rests on an inclined plane...").
+   - When a diagram is present or referenced in the question, you MUST provide:
+     a) "diagramDescription": A precise, detailed textual description of the visual setup (e.g., "Circuit diagram with a 12V DC battery connected in series with a 4Ω resistor, followed by two parallel branches containing 6Ω and 3Ω resistors respectively.").
+     b) "diagramSvg": Whenever possible, generate a clean, standalone, dark-mode-styled SVG graphic string (viewBox="0 0 400 240") representing the circuit, geometric triangle/circle, graph axes, or block-pulley system using standard SVG elements (<svg xmlns="http://www.w3.org/2000/svg" ...> <rect>, <circle>, <line>, <path>, <text>). Use high-contrast stroke colors like #38bdf8 (cyan), #818cf8 (indigo), #34d399 (emerald), and fill="none".
+8. Format equations in questions and solutions using standard LaTeX ($...$ inline, $$...$$ block).`;
 
     const contents: any[] = [];
     if (imageBase64 && !isPdf) {
@@ -107,7 +113,7 @@ Rules:
       (examPreset ? `Target Exam Type: ${examPreset}\n` : '') +
       (combinedText
         ? `Paper Text / Telegram Message:\n${combinedText.substring(0, 30000)}`
-        : 'Extract all questions, options, correct answers, and detailed explanations from the attached image/document.');
+        : 'Extract all questions, options, diagrams/circuits (with descriptions and clean SVG schematics), correct answers, and detailed explanations from the attached image/document.');
 
     contents.push({ text: promptText });
 
@@ -139,6 +145,14 @@ Rules:
                   questionNumber: { type: Type.INTEGER },
                   section: { type: Type.STRING, description: 'Subject or section name' },
                   text: { type: Type.STRING, description: 'Full question statement, including equations/context' },
+                  diagramDescription: {
+                    type: Type.STRING,
+                    description: 'Detailed description of any circuit, graph, pulley, ray diagram, geometry figure, or chemical reaction scheme referenced in the question',
+                  },
+                  diagramSvg: {
+                    type: Type.STRING,
+                    description: 'Optional self-contained SVG graphic string (viewBox="0 0 400 240") rendering the schematic diagram or geometric figure with high contrast colors',
+                  },
                   options: {
                     type: Type.ARRAY,
                     items: {
