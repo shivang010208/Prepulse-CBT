@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Clock,
-  Calculator,
   PenTool,
   AlertTriangle,
   ChevronLeft,
@@ -11,11 +10,11 @@ import {
   RotateCcw,
   Grid,
   X,
+  Sparkles,
 } from 'lucide-react';
 import { ExamPaper, ExamAttempt, QuestionAttemptState } from '../types/exam';
 import { StorageService } from '../services/storageService';
 import { ScratchpadModal } from './ScratchpadModal';
-import { CalculatorModal } from './CalculatorModal';
 import { sanitizeQuestionOptions } from '../utils/optionSanitizer';
 
 interface CBTTestViewProps {
@@ -58,9 +57,22 @@ export const CBTTestView: React.FC<CBTTestViewProps> = ({
 
   // Tools state
   const [showScratchpad, setShowScratchpad] = useState(false);
-  const [showCalculator, setShowCalculator] = useState(false);
   const [showPaletteDrawer, setShowPaletteDrawer] = useState(false);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+
+  // Bookmark / Revision Deck sync state
+  const [bookmarkedMap, setBookmarkedMap] = useState<Record<string, boolean>>(() => {
+    const map: Record<string, boolean> = {};
+    const existing = StorageService.getBookmarks();
+    existing.forEach((b) => {
+      map[b.questionId] = true;
+    });
+    return map;
+  });
+  const [bookmarkToast, setBookmarkToast] = useState<{ message: string; visible: boolean }>({
+    message: '',
+    visible: false,
+  });
 
   const currentQuestion = paper.questions[currentQuestionIndex];
 
@@ -217,6 +229,26 @@ export const CBTTestView: React.FC<CBTTestViewProps> = ({
     setShowPaletteDrawer(false);
   };
 
+  const handleToggleRevisionDeck = () => {
+    if (!currentQuestion) return;
+    const isNowSaved = StorageService.toggleBookmark(paper.id, currentQuestion, paper.title);
+    setBookmarkedMap((prev) => ({
+      ...prev,
+      [currentQuestion.id]: isNowSaved,
+    }));
+
+    setBookmarkToast({
+      message: isNowSaved
+        ? `Question ${currentQuestion.questionNumber} added to Revision Deck`
+        : `Question ${currentQuestion.questionNumber} removed from Revision Deck`,
+      visible: true,
+    });
+
+    setTimeout(() => {
+      setBookmarkToast((prev) => ({ ...prev, visible: false }));
+    }, 2200);
+  };
+
   // Submit test calculations
   const calculateResultAndSubmit = () => {
     recordQuestionTime();
@@ -338,7 +370,7 @@ export const CBTTestView: React.FC<CBTTestViewProps> = ({
           </div>
         </div>
 
-        {/* Right Header Tools: Timer, Scratchpad, Calculator, Palette Toggle */}
+        {/* Right Header Tools: Timer, Scratchpad, Palette Toggle */}
         <div className="flex items-center gap-2">
           {/* Scratchpad Trigger */}
           <button
@@ -348,16 +380,6 @@ export const CBTTestView: React.FC<CBTTestViewProps> = ({
           >
             <PenTool className="w-3.5 h-3.5 text-cyan-400" />
             <span className="hidden sm:inline">Rough Sheet</span>
-          </button>
-
-          {/* Calculator Trigger */}
-          <button
-            onClick={() => setShowCalculator(true)}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium"
-            title="Open Calculator"
-          >
-            <Calculator className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="hidden sm:inline">Calc</span>
           </button>
 
           {/* Countdown Timer */}
@@ -640,8 +662,8 @@ export const CBTTestView: React.FC<CBTTestViewProps> = ({
       {/* CBT Fixed Bottom Action Bar */}
       <footer className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-2.5 sm:p-3">
         <div className="max-w-4xl mx-auto flex items-center justify-between gap-2">
-          {/* Left Actions */}
-          <div className="flex items-center gap-1.5">
+          {/* Left Actions: Clear, Mark & Next, Save to Revision Deck */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <button
               onClick={handleClearResponse}
               disabled={!attemptStates[currentQuestion.id]?.selectedOptionId}
@@ -651,9 +673,37 @@ export const CBTTestView: React.FC<CBTTestViewProps> = ({
             </button>
             <button
               onClick={handleMarkForReviewAndNext}
-              className="px-2.5 sm:px-3 py-2 rounded-xl bg-purple-950/80 hover:bg-purple-900 border border-purple-800 text-purple-200 text-xs font-semibold min-h-[44px] flex items-center justify-center transition"
+              className="px-2.5 sm:px-3 py-2 rounded-xl bg-purple-950/80 hover:bg-purple-900 border border-purple-800 text-purple-200 text-xs font-semibold min-h-[44px] flex items-center justify-center transition whitespace-nowrap"
             >
               Mark & Next
+            </button>
+            
+            {/* Save to Revision Deck Toggle Button */}
+            <button
+              type="button"
+              onClick={handleToggleRevisionDeck}
+              className={`px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold min-h-[44px] flex items-center gap-1.5 transition whitespace-nowrap border ${
+                bookmarkedMap[currentQuestion.id]
+                  ? 'bg-amber-950/90 border-amber-600/70 text-amber-300 shadow-xs'
+                  : 'bg-slate-800/90 hover:bg-slate-700 border-slate-700 text-slate-300 hover:text-amber-200'
+              }`}
+              title={
+                bookmarkedMap[currentQuestion.id]
+                  ? 'Question is saved in your Revision Deck (Click to remove)'
+                  : 'Save this question to your Revision Deck for offline revision'
+              }
+            >
+              <Bookmark
+                className={`w-3.5 h-3.5 shrink-0 ${
+                  bookmarkedMap[currentQuestion.id] ? 'fill-amber-400 text-amber-400' : 'text-slate-400'
+                }`}
+              />
+              <span className="hidden sm:inline">
+                {bookmarkedMap[currentQuestion.id] ? 'Saved to Deck' : 'Save to Revision'}
+              </span>
+              <span className="sm:hidden">
+                {bookmarkedMap[currentQuestion.id] ? 'Saved' : 'Revision'}
+              </span>
             </button>
           </div>
 
@@ -687,9 +737,16 @@ export const CBTTestView: React.FC<CBTTestViewProps> = ({
         </div>
       </footer>
 
-      {/* Scratchpad and Calculator Modals */}
+      {/* Floating Bookmark Toast Feedback */}
+      {bookmarkToast.visible && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 border border-amber-500/50 text-amber-200 px-4 py-2 rounded-xl text-xs font-medium shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200 backdrop-blur-md">
+          <Bookmark className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
+          <span>{bookmarkToast.message}</span>
+        </div>
+      )}
+
+      {/* Scratchpad Modal */}
       <ScratchpadModal isOpen={showScratchpad} onClose={() => setShowScratchpad(false)} />
-      <CalculatorModal isOpen={showCalculator} onClose={() => setShowCalculator(false)} />
 
       {/* Submit Test Confirmation Modal */}
       {showSubmitConfirm && (
